@@ -1,0 +1,33 @@
+app:
+  image: dsusanibar/centosnodejs:latest
+  environment:
+    SERVICE_80_NAME: http
+    SERVICE_NAME: app
+    SERVICE_TAGS: production
+  ports:
+  - "8080"
+
+lb:
+  build: ./
+  links:
+  - consul
+  ports:
+  - "80:80"
+
+consul:
+  command: -server -bootstrap -advertise 192.168.1.14
+  image: progrium/consul:latest
+  ports:
+  - "8300:8300"
+  - "8400:8400"
+  - "8500:8500"
+  - "8600:53/udp"
+
+registrator:
+  privileged: true
+  command: consul://consul:8500
+  image: gliderlabs/registrator
+  links:
+  - consul
+  volumes:
+  - "/var/run/docker.sock:/tmp/docker.sock"
