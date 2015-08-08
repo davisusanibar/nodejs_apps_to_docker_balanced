@@ -15,7 +15,7 @@ docker0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
 
 After the execution of:
 ```yaml
-sudo docker-compose up
+[myusertest@vm14 nodejs_apps_to_docker_balanced]$ sudo docker-compose up
 
 With this configuration all the services started without problems:
 172.17.0.7  /nodejsappstodockerbalanced_registrator_1 gliderlabs/registrator true fa363950c7bd8a51f0584aaf8fb8cb0b80ea59405cf5fd5b16b47cae5618a13e
@@ -33,7 +33,7 @@ a9a666b5b783        nodejsappstodockerbalanced_lb:latest   "/usr/bin/runsvdir / 
 ```
 
 Test:
-- If we call directly my Node JS services that is runngin on my container or it was resolved without problems:
+- If we call directly my Node JS services that is running on my container, it was resolved without problems:
 ```yaml
 [myusertest@vm14 nodejs_apps_to_docker_balanced]$ curl 172.17.0.1:8080/bluegreen
 Hello world to test blue green deployment!! Server: ::, Port: 8080
@@ -41,7 +41,7 @@ Hello world to test blue green deployment!! Server: ::, Port: 8080
 [myusertest@vm14 nodejs_apps_to_docker_balanced]$ curl localhost:32768/bluegreen
 Hello world to test blue green deployment!! Server: ::, Port: 8080
 ```
-, but if we call to my Nginx Proxy pass, it is not resolved, the request :
+, but if we call to my Nginx Proxy pass, it is not resolved, but the request is arrived to the container as we could see:
 ```yaml
 [myusertest@vm14 nodejs_apps_to_docker_balanced]$ curl localhost:80/bluegreen
 <html>
@@ -58,11 +58,11 @@ lb_1          | 2015/08/08 23:23:16 [error] 21#0: *19 connect() failed (113: No 
 lb_1          | 172.17.42.1 - - [08/Aug/2015:23:23:16 +0000] "GET /bluegreen HTTP/1.1" 502 173 "-" "curl/7.29.0" "-"
 ```
 To solve this problem, there are many options, for example:
-. http://blog.gnu-designs.com/howto-enable-docker-api-through-firewalld-on-centos-7-x-el7/
-. http://blog.simulakrum.org/?p=243
-. http://unix.stackexchange.com/questions/199966/how-to-configure-centos-7-firewalld-to-allow-docker-containers-free-access-to-th
+- http://blog.gnu-designs.com/howto-enable-docker-api-through-firewalld-on-centos-7-x-el7/
+- http://blog.simulakrum.org/?p=243
+- http://unix.stackexchange.com/questions/199966/how-to-configure-centos-7-firewalld-to-allow-docker-containers-free-access-to-th
 
-At the end, our project started correctly with:
+At the end, our project started correctly after the execution of this commands:
 ```yaml
 [myusertest@vm14 nodejs_apps_to_docker_balanced]$ sudo firewall-cmd --permanent --zone=trusted --add-interface=docker0
 success
@@ -72,11 +72,6 @@ success
 success
 [myusertest@vm14 nodejs_apps_to_docker_balanced]$ curl localhost:80/bluegreen
 Hello world to test blue green deployment!! Server: ::, Port: 8080
-```
-
-Then we could execute:
-```yaml
-
 ```
 
 With this new configuration all the services started without problems, log example:
@@ -146,7 +141,7 @@ registrator_1 | 2015/08/08 21:46:56 registrator: added: 19fd10ff602c fa363950c7b
 registrator_1 | 2015/08/08 21:46:56 registrator: Listening for Docker events...
 ```
 
-It was tested od Centox 7
+It was tested on Centox 7
 Linux pchost 3.10.0-123.13.2.el7.x86_64 x86_64 GNU/Linux
 
 
