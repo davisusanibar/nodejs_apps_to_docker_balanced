@@ -23,7 +23,7 @@ With this configuration all the services started without problems:
 172.17.0.2  /nodejsappstodockerbalanced_consul_1 progrium/consul:latest true 4268809eaa8295a80f926f8321efebfeb089010ded7c514a35e58ebcda148f9b
 172.17.0.1  /nodejsappstodockerbalanced_app_1 dsusanibar/nodejscloudport:latest true 19fd10ff602c0936befc5aa8c524612ea5ffa37b6606fe15091211e276159546
 
-[cloud@vm14 nodejs_apps_to_docker_balanced]$ sudo docker ps -a
+[myusertest@vm14 nodejs_apps_to_docker_balanced]$ sudo docker ps -a
 
 CONTAINER ID        IMAGE                                  COMMAND                CREATED             STATUS              PORTS                                                                                                                                NAMES
 fa363950c7bd        gliderlabs/registrator:latest          "/bin/registrator co   About an hour ago   Up About an hour                                                                                                                                         nodejsappstodockerbalanced_registrator_1
@@ -35,15 +35,15 @@ a9a666b5b783        nodejsappstodockerbalanced_lb:latest   "/usr/bin/runsvdir / 
 Test:
 - If we call directly my Node JS services that is runngin on my container or it was resolved without problems:
 ```yaml
-[cloud@vm14 nodejs_apps_to_docker_balanced]$ curl 172.17.0.1:8080/bluegreen
+[myusertest@vm14 nodejs_apps_to_docker_balanced]$ curl 172.17.0.1:8080/bluegreen
 Hello world to test blue green deployment!! Server: ::, Port: 8080
 
-[cloud@vm14 nodejs_apps_to_docker_balanced]$ curl localhost:32768/bluegreen
+[myusertest@vm14 nodejs_apps_to_docker_balanced]$ curl localhost:32768/bluegreen
 Hello world to test blue green deployment!! Server: ::, Port: 8080
 ```
 , but if we call to my Nginx Proxy pass, it is not resolved, the request :
 ```yaml
-[cloud@vm14 nodejs_apps_to_docker_balanced]$ curl localhost:80/bluegreen
+[myusertest@vm14 nodejs_apps_to_docker_balanced]$ curl localhost:80/bluegreen
 <html>
 <head><title>502 Bad Gateway</title></head>
 <body bgcolor="white">
@@ -64,13 +64,13 @@ To solve this problem, there are many options, for example:
 
 At the end, our project started correctly with:
 ```yaml
-[cloud@vm14 nodejs_apps_to_docker_balanced]$ sudo firewall-cmd --permanent --zone=trusted --add-interface=docker0
+[myusertest@vm14 nodejs_apps_to_docker_balanced]$ sudo firewall-cmd --permanent --zone=trusted --add-interface=docker0
 success
-[cloud@vm14 nodejs_apps_to_docker_balanced]$ sudo firewall-cmd --permanent --zone=trusted --add-port=4243/tcp
+[myusertest@vm14 nodejs_apps_to_docker_balanced]$ sudo firewall-cmd --permanent --zone=trusted --add-port=4243/tcp
 success
-[cloud@vm14 nodejs_apps_to_docker_balanced]$ sudo firewall-cmd --reload
+[myusertest@vm14 nodejs_apps_to_docker_balanced]$ sudo firewall-cmd --reload
 success
-[cloud@vm14 nodejs_apps_to_docker_balanced]$ curl localhost:80/bluegreen
+[myusertest@vm14 nodejs_apps_to_docker_balanced]$ curl localhost:80/bluegreen
 Hello world to test blue green deployment!! Server: ::, Port: 8080
 ```
 
@@ -81,7 +81,7 @@ Then we could execute:
 
 With this new configuration all the services started without problems, log example:
 ```yaml
-[cloud@vm14 nodejs_apps_to_docker_balanced]$ sudo docker-compose up
+[myusertest@vm14 nodejs_apps_to_docker_balanced]$ sudo docker-compose up
 
 Creating nodejsappstodockerbalanced_lb_1...
 Creating nodejsappstodockerbalanced_registrator_1...
